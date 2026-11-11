@@ -26,9 +26,17 @@ Return recipe suggestions and eventually the recipe instructions to the user, if
 """
 
 from langchain.agents import create_agent
+from langchain.chat_models import init_chat_model
+from langchain.messages import HumanMessage
+
+model = init_chat_model(model="openrouter/free", model_provider="openrouter")
 
 agent = create_agent(
-    model="gpt-5-nano",
+    model=model,
     tools=[web_search],
     system_prompt=system_prompt
 )
+
+response = agent.invoke({"messages": [HumanMessage(content="I have some leftover chicken and rice. What can I make?")]})
+
+print(response['messages'][-1].content)
